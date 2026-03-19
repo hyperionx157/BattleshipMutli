@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battleship — Multiplayer</title>
+  <link rel="icon" href="img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ═══════════════════════════ LOBBY SCREEN ═══════════════════════════ -->
+<div id="screen-lobby" class="screen active">
+  <div class="lobby-bg"></div>
+  <div class="lobby-content">
+    <div class="logo-block">
+      <div class="logo-subtitle">NAVAL COMMAND</div>
+      <h1 class="logo-title">BATTLESHIP</h1>
+      <div class="logo-line"></div>
+    </div>
+
+    <div class="lobby-panels">
+      <div class="lobby-panel" id="panel-host">
+        <div class="panel-icon">⚓</div>
+        <h2>Host Game</h2>
+        <p>Create a room and share the code with your opponent.</p>
+        <input type="text" id="host-name" placeholder="Your callsign..." maxlength="16" autocomplete="off">
+        <button class="btn btn-primary" id="btn-host">DEPLOY FLEET</button>
+        <div id="room-code-display" class="hidden">
+          <p class="room-label">ROOM CODE</p>
+          <div class="room-code" id="room-code-value">------</div>
+          <button class="btn btn-copy" id="btn-copy-code">📋 COPY CODE</button>
+          <p class="waiting-text" id="waiting-text">⏳ Awaiting opponent...</p>
+        </div>
+      </div>
+
+      <div class="lobby-divider"><span>OR</span></div>
+
+      <div class="lobby-panel" id="panel-join">
+        <div class="panel-icon">🎯</div>
+        <h2>Join Game</h2>
+        <p>Enter the room code your opponent shared with you.</p>
+        <input type="text" id="join-name" placeholder="Your callsign..." maxlength="16" autocomplete="off">
+        <input type="text" id="join-code" placeholder="Room code..." maxlength="20" autocomplete="off" style="text-transform:uppercase; letter-spacing:0.1em;">
+        <button class="btn btn-secondary" id="btn-join">BOARD VESSEL</button>
+        <p class="error-text hidden" id="join-error">Could not connect. Check the code.</p>
+      </div>
+    </div>
+
+    <div class="lobby-footer">
+      <p>Peer-to-peer multiplayer • No server required • Works on GitHub Pages</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ GAME SCREEN ════════════════════════════ -->
+<div id="screen-game" class="screen hidden">
+  <header class="game-header">
+    <div class="header-logo">⚓ BATTLESHIP</div>
+    <div class="header-status">
+      <div class="player-tag" id="header-you">YOU: <span id="header-you-name">—</span></div>
+      <div class="vs-tag">VS</div>
+      <div class="player-tag" id="header-opp">OPP: <span id="header-opp-name">—</span></div>
+    </div>
+    <div class="header-turn" id="header-turn">⌛ WAITING</div>
+  </header>
+
+  <div class="game-layout">
+
+    <!-- LEFT SIDEBAR: Ship roster / restart -->
+    <aside class="sidebar sidebar-left" id="sidebar-setup">
+      <div id="setup-panel">
+        <h3>PLACE SHIPS</h3>
+        <ul class="fleet-roster" id="fleet-roster">
+          <li data-type="carrier"    data-size="5">Aircraft Carrier <span>●●●●●</span></li>
+          <li data-type="battleship" data-size="4">Battleship <span>●●●●</span></li>
+          <li data-type="destroyer"  data-size="3">Destroyer <span>●●●</span></li>
+          <li data-type="submarine"  data-size="3">Submarine <span>●●●</span></li>
+          <li data-type="patrolboat" data-size="2">Patrol Boat <span>●●</span></li>
+        </ul>
+        <button class="btn btn-sm" id="btn-rotate">↺ ROTATE</button>
+        <button class="btn btn-sm btn-rand" id="btn-random">🎲 RANDOM</button>
+        <button class="btn btn-primary btn-ready hidden" id="btn-ready">✔ READY</button>
+      </div>
+
+      <div id="restart-panel" class="hidden">
+        <h3 id="result-title">GAME OVER</h3>
+        <p id="result-msg"></p>
+        <button class="btn btn-primary" id="btn-restart">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="btn-lobby">← LOBBY</button>
+      </div>
+    </aside>
+
+    <!-- GRIDS -->
+    <main class="grids-area">
+      <div class="grid-wrapper">
+        <div class="grid-label">YOUR WATERS</div>
+        <div class="grid" id="grid-human"></div>
+      </div>
+      <div class="grid-wrapper">
+        <div class="grid-label">ENEMY WATERS</div>
+        <div class="grid" id="grid-enemy"></div>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: Stats + log -->
+    <aside class="sidebar sidebar-right">
+      <div class="stats-block">
+        <h3>STATS</h3>
+        <div class="stat-row"><span>YOUR SHOTS</span><strong id="stat-shots">0</strong></div>
+        <div class="stat-row"><span>HITS</span><strong id="stat-hits">0</strong></div>
+        <div class="stat-row"><span>ACCURACY</span><strong id="stat-acc">—</strong></div>
+        <div class="stat-row"><span>SHIPS SUNK</span><strong id="stat-sunk">0 / 5</strong></div>
+      </div>
+
+      <div class="log-block">
+        <h3>BATTLE LOG</h3>
+        <ul id="battle-log"></ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ════════════════════ CONNECTION STATUS TOAST ════════════════════════ -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
